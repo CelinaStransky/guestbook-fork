@@ -17,6 +17,9 @@ package guestbook;
 
 import java.time.LocalDateTime;
 
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -24,7 +27,8 @@ import jakarta.persistence.Id;
 import org.springframework.util.Assert;
 
 /**
- * A guestbook entry. An entity as in the Domain Driven Design context. Mapped onto the database using JPA annotations.
+ * A guestbook entry. An entity as in the Domain Driven Design context. Mapped
+ * onto the database using JPA annotations.
  *
  * @author Paul Henke
  * @author Oliver Drotbohm
@@ -49,6 +53,7 @@ class GuestbookEntry {
 		Assert.hasText(name, "Name must not be null or empty!");
 		Assert.hasText(text, "Text must not be null or empty!");
 		Assert.hasText(email, "Email must not be null or empty");
+		Assert.isTrue(checkEmail(email), "Email must be valid pattern");
 
 		this.name = name;
 		this.text = text;
@@ -60,7 +65,7 @@ class GuestbookEntry {
 
 		Assert.hasText(name, "Name must not be null or empty!");
 		Assert.hasText(text, "Text must not be null or empty!");
-		
+
 		this.name = name;
 		this.text = text;
 		this.email = "";
@@ -73,6 +78,12 @@ class GuestbookEntry {
 		this.text = null;
 		this.date = null;
 		this.email = null;
+	}
+
+	private boolean checkEmail(String email){
+		Pattern pattern = Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]+$");
+        Matcher matcher = pattern.matcher(email);
+        return matcher.find();
 	}
 
 	public String getName() {
@@ -91,7 +102,7 @@ class GuestbookEntry {
 		return text;
 	}
 
-	public String getEmail(){
+	public String getEmail() {
 		return email;
 	}
 }
